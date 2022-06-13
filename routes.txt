@@ -1,0 +1,7 @@
+-> /login
+-> /cadastro
+-> "/" (tela principal com as salas disponiveis no dia)
+-> /agendamento
+-> /salas/semana
+-> /salas/mes
+

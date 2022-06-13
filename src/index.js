@@ -9,5 +9,5 @@ app.use(express.json());
 app.use(cors());
 
 app.listen(process.env.PORT, () => {
-    console.log(chalk.bold.green('Server running on 4000'));
+    console.log(chalk.bold.green('Server running on ' + process.env.PORT));
 });
