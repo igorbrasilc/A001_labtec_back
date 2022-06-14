@@ -1,6 +1,7 @@
-export default async function validateSchema(schema) {
+export default function validateSchema(schema) {
     return (req, res, next) => {
-        const {error} = schema.validate(req.body, {abortEarly: false});
+        const {body} = req;
+        const {error} = schema.validate(body, {abortEarly: false});
 
         if (error) {
             return res.status(422).send(error.details.map(error => {
