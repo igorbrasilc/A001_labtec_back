@@ -1,5 +1,6 @@
 /* eslint-disable import/extensions */
 import db from '../database.js';
+import bcrypt from 'bcrypt';
 
 export async function signUp(req, res) {
     const {name, email, password} = req.body;
@@ -9,8 +10,8 @@ export async function signUp(req, res) {
         const userSearch = await db.query('SELECT id FROM users WHERE email = $1', [body.email]);
 
         if (userSearch.rowCount > 0) return res.status(409).send('Usuário já cadastrado');
-        
-        await db.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', [name, email, password]);
+
+        await db.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', [name, email, await bcrypt.hash(password, 10)]);
 
         res.status(201).send('Usuário cadastrado!');
     } catch (e) {
