@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { validateSchema } from '../middlewares/schemaValidator';
-import { tokenValidation } from '../middlewares/authValidator';
+import { validateSchema } from '../middlewares/schemaValidator.js';
+import { tokenValidation } from '../middlewares/authValidator.js';
 import { scheduleRoom } from '../controllers/classController.js';
 import { classSchema } from '../schemas/classSchemas.js';
 

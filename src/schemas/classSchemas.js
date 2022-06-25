@@ -1,10 +1,13 @@
 import joi from 'joi';
+import JoiDate from '@joi/date';
 
-export const classSchema = joi.object({
-    description: joi.string().required(),
-    reservationDate: joi.date().format('DD/MM/YYYY').required(),
-    reservationHour: joi.date().format('HH:mm').required(),
-    durationInHours: joi.date().format('HH:mm').required(),
-    userId: joi.number().required(),
-    roomId: joi.number().required()
+const Joi = joi.extend(JoiDate);
+
+export const classSchema = Joi.object({
+    description: Joi.string().required(),
+    reservationDate: Joi.date().format('DD/MM/YYYY').required(),
+    reservationHour: Joi.date().format('HH:mm').required(),
+    durationInHours: Joi.date().format('HH:mm').required(),
+    userId: Joi.number().required(),
+    roomId: Joi.number().required()
 });
