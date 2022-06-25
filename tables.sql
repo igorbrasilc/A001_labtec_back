@@ -30,7 +30,8 @@ CREATE TABLE "roomReservations" (
     "id" SERIAL PRIMARY KEY,
     "description" TEXT NOT NULL,
     "reservationDate" TIMESTAMP NOT NULL,
-    "reservationHour" TIMESTAMP NOT NULL,
+    "reservationHour" TEXT NOT NULL,
+    "durationInHours" TEXT NOT NULL,
     "userId" INTEGER NOT NULL REFERENCES "users"("id"),
     "roomId" INTEGER NOT NULL REFERENCES "classrooms"("id")
 );
