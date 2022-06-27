@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import chalk from 'chalk';
 
 import router from './routers/index.js';
 
@@ -13,5 +12,5 @@ app.use(express.json());
 app.use(router);
 
 app.listen(process.env.PORT, process.env.HOST, () => {
-    console.log(chalk.bold.green('Server running on ' + process.env.PORT_LOCAL))
+    console.log('Server running on ' + process.env.PORT)
 });
