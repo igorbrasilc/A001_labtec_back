@@ -12,6 +12,6 @@ app.use(cors());
 app.use(express.json());
 app.use(router);
 
-app.listen(process.env.PORT_LOCAL, process.env.HOST, () => {
+app.listen(process.env.PORT, process.env.HOST, () => {
     console.log(chalk.bold.green('Server running on ' + process.env.PORT_LOCAL))
 });
