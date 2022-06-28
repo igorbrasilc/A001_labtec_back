@@ -1,19 +1,21 @@
 /* eslint-disable import/extensions */
-import db from '../database.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import authRepository from '../repositories/authRepository.js';
 import 'dotenv/config';
 
 export async function signUp(req, res) {
     const {name, email, password} = req.body;
     const {body} = req;
 
+    const hashPassword = await bcrypt.hash(password, 10);
+
     try {
-        const userSearch = await db.query('SELECT * FROM users WHERE email = $1', [body.email]);
+        const userSearch = await authRepository.getUsersByEmail(body.email);
 
         if (userSearch.rowCount > 0) return res.status(409).send('Usuário já cadastrado');
 
-        await db.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', [name, email, await bcrypt.hash(password, 10)]);
+        await authRepository.insertUser(name, email, hashPassword);
 
         res.status(201).send('Usuário cadastrado!');
     } catch (e) {
@@ -26,7 +28,7 @@ export async function signIn(req, res) {
     const {email, password} = req.body;
 
     try {
-        const userSearch = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+        const userSearch = await authRepository.getUsersByEmail(email);
 
         if (userSearch.rowCount > 0 && bcrypt.compareSync(password, userSearch.rows[0].password)) {
             const token = jwt.sign(userSearch.rows[0], process.env.JWT_SECRET, { expiresIn: 60*60 })

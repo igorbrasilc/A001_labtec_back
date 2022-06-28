@@ -3,24 +3,27 @@ import 'dotenv/config';
 
 const { Pool } = pg;
 
-const {password, host, user, port, database} = process.env;
+const {password, host, user, port, database, MODE} = process.env;
 
-const databaseConfig = {
-    connectionString: process.env.DATABASE_URL
-};
+let databaseConfig;
 
-// const databaseConfig = {
-//     user,
-//     password,
-//     host,
-//     port,
-//     database
-// };
+if (MODE === 'PROD') {
+    databaseConfig = {
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    };
+}
 
-if (process.env.MODE === 'PROD') {
-    databaseConfig.ssl = {
-        rejectUnauthorized: false
-    }
+if (MODE === 'DEV') {
+    databaseConfig = {
+        user,
+        password,
+        host,
+        port,
+        database
+    };
 }
 
 const db = new Pool(databaseConfig);

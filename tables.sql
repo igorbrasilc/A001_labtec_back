@@ -22,7 +22,6 @@ CREATE TABLE "classrooms" (
     "id" SERIAL PRIMARY KEY,
     "room" VARCHAR(100) NOT NULL,
     "needsAuth" BOOLEAN NOT NULL,
-    "email" TEXT NOT NULL UNIQUE,
     "responsibleId" INTEGER REFERENCES "users"("id") DEFAULT 1
 );
 

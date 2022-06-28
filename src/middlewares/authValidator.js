@@ -5,7 +5,7 @@ export async function tokenValidation(req, res, next) {
     const {authorization} = req.headers;
     const token = authorization?.replace('Bearer', '').trim();
 
-    if (!token) return res.status(401).redirect('/login');
+    if (!token) return res.status(401).redirect('/');
 
     try {
         const user = jwt.verify(token, process.env.JWT_SECRET);
