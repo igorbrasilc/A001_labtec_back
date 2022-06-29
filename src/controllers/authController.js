@@ -42,3 +42,9 @@ export async function signIn(req, res) {
         console.log('Erro ao fazer o login', e);
     }
 }
+
+export async function getUserInfos(req, res) {
+    const { user } = res.locals;
+
+    res.status(200).send(user);
+}

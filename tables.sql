@@ -25,6 +25,16 @@ CREATE TABLE "classrooms" (
     "responsibleId" INTEGER REFERENCES "users"("id") DEFAULT 1
 );
 
+CREATE TABLE "pendingRoomReservations" (
+    "id" SERIAL PRIMARY KEY,
+    "description" TEXT NOT NULL,
+    "reservationDate" TIMESTAMP NOT NULL,
+    "reservationHour" TEXT NOT NULL,
+    "durationInHours" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL REFERENCES "users"("id"),
+    "roomId" INTEGER NOT NULL REFERENCES "classrooms"("id")
+);
+
 CREATE TABLE "roomReservations" (
     "id" SERIAL PRIMARY KEY,
     "description" TEXT NOT NULL,
