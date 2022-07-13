@@ -16,7 +16,6 @@ model accessLevels {
 model classrooms {
   id                      Int                       @id @default(autoincrement())
   room                    String                    @db.VarChar(100)
-  needsAuth               Boolean
   responsibleId           Int?                      @default(1)
   users                   users?                    @relation(fields: [responsibleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   pendingRoomReservations pendingRoomReservations[]

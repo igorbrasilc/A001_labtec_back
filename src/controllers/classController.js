@@ -6,7 +6,7 @@ export async function scheduleRoom(req, res) {
     // TODO: TESTAR ESSA QUERY E INSERIR NO CLASSREPOSITORY
     try {
         await db.query(`
-        INSERT INTO "roomReservations"
+        INSERT INTO "pendingRoomReservations"
         (description, "reservationDate", "durationInHours", "reservationHour", "userId", "roomId")
         VALUES
         ($1, $2, $3, $4, $5, $6)
