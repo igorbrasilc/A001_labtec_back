@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model accessLevels {
+  id    Int     @id @default(autoincrement())
+  level String  @unique @db.VarChar(20)
+  users users[]
+}
+
+model classrooms {
+  id                      Int                       @id @default(autoincrement())
+  room                    String                    @db.VarChar(100)
+  needsAuth               Boolean
+  responsibleId           Int?                      @default(1)
+  users                   users?                    @relation(fields: [responsibleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pendingRoomReservations pendingRoomReservations[]
+  roomReservations        roomReservations[]
+}
+
+model pendingRoomReservations {
+  id              Int        @id @default(autoincrement())
+  description     String
+  reservationDate DateTime   @db.Timestamp(6)
+  reservationHour String
+  durationInHours String
+  userId          Int
+  roomId          Int
+  classrooms      classrooms @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users           users      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model roomReservations {
+  id              Int        @id @default(autoincrement())
+  description     String
+  reservationDate DateTime   @db.Timestamp(6)
+  reservationHour DateTime   @db.Timestamp(6)
+  userId          Int
+  roomId          Int
+  classrooms      classrooms @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users           users      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  id                      Int                       @id @default(autoincrement())
+  name                    String                    @db.VarChar(100)
+  levelId                 Int?                      @default(2)
+  email                   String                    @unique
+  password                String
+  createdAt               DateTime?                 @default(now()) @db.Timestamp(6)
+  accessLevels            accessLevels?             @relation(fields: [levelId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  classrooms              classrooms[]
+  pendingRoomReservations pendingRoomReservations[]
+  roomReservations        roomReservations[]
+}
