@@ -1,16 +1,21 @@
-import db from '../database.js';
+import prisma from "../database.js";
 
-function getAvailableRooms() {
-    return db.query(`
+async function getAvailableRooms() {
+  return prisma.$queryRaw`
     SELECT
     cl.id as "classId", cl.room, us.email as "responsibleEmail", us.name as "responsibleName"
     FROM classrooms cl
     JOIN users us ON cl."responsibleId" = us.id
-    `)
+    `;
+}
+
+async function insertClassroomReservation(data) {
+  return prisma.pendingRoomReservations.insert({ data });
 }
 
 const classRepository = {
-    getAvailableRooms
-}
+  getAvailableRooms,
+  insertClassroomReservation,
+};
 
-export default classRepository
+export default classRepository;

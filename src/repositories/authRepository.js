@@ -1,16 +1,22 @@
-import db from '../database.js';
+import prisma from "../database.js";
 
-function getUsersByEmail(email) {
-    return db.query('SELECT * FROM users WHERE email = $1', [email]);
+async function getUsersByEmail(email) {
+  return prisma.users.findMany({ where: { email } });
 }
 
-function insertUser(name, email, hashPassword) {
-    return db.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', [name, email, hashPassword])
+async function insertUser(name, email, hashPassword) {
+  return prisma.users.create({
+    data: {
+      name,
+      email,
+      password: hashPassword,
+    },
+  });
 }
 
 const authRepository = {
-    getUsersByEmail,
-    insertUser
-}
+  getUsersByEmail,
+  insertUser,
+};
 
 export default authRepository;
