@@ -66,20 +66,11 @@ export async function getPendingReservations(req, res) {
 export async function getConfirmedReservations(req, res) {
     const { roomId } = req.params;
     const { user } = res.locals;
-    let confirmedReservations = null;
 
     try {
         const room = await classRepository.getRoom(Number(roomId));
-        if (room.responsibleId === user.id) {
-            confirmedReservations =
-                await classRepository.getConfirmedReservationsAdmin(room.id);
-        } else {
-            confirmedReservations =
-                await classRepository.getConfirmedReservations(
-                    room.id,
-                    user.id
-                );
-        }
+        const confirmedReservations =
+            await classRepository.getConfirmedReservationsAdmin(room.id);
 
         res.status(200).send(confirmedReservations);
     } catch (err) {
