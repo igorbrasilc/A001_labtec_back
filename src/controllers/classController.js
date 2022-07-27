@@ -67,10 +67,14 @@ export async function getConfirmedReservations(req, res) {
     const { roomId } = req.params;
     const { user } = res.locals;
 
+    if (isNaN(Number(roomId))) {
+        return res.status(422).send('O param deve ser numérico');
+    }
+
     try {
         const room = await classRepository.getRoom(Number(roomId));
         const confirmedReservations =
-            await classRepository.getConfirmedReservationsAdmin(room.id);
+            await classRepository.getConfirmedReservations(room.id);
 
         res.status(200).send(confirmedReservations);
     } catch (err) {
