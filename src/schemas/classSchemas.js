@@ -9,5 +9,5 @@ export const classSchema = Joi.object({
     reservationHour: Joi.date().format('HH:mm').required(),
     durationInHours: Joi.date().format('HH:mm').required(),
     userId: Joi.number().required(),
-    roomId: Joi.number().required()
+    roomId: Joi.number().required(),
 });

@@ -25,7 +25,7 @@ model classrooms {
 model pendingRoomReservations {
   id              Int        @id @default(autoincrement())
   description     String
-  reservationDate DateTime   @db.Timestamp(6)
+  reservationDate String
   reservationHour String
   durationInHours String
   userId          Int
@@ -37,8 +37,9 @@ model pendingRoomReservations {
 model roomReservations {
   id              Int        @id @default(autoincrement())
   description     String
-  reservationDate DateTime   @db.Timestamp(6)
-  reservationHour DateTime   @db.Timestamp(6)
+  reservationDate String
+  reservationHour String
+  durationInHours String
   userId          Int
   roomId          Int
   classrooms      classrooms @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction)
