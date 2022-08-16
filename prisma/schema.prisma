@@ -49,10 +49,10 @@ model roomReservations {
 model users {
   id                      Int                       @id @default(autoincrement())
   name                    String                    @db.VarChar(100)
-  levelId                 Int?                      @default(2)
+  levelId                 Int                     @default(2)
   email                   String                    @unique
   password                String
-  createdAt               DateTime?                 @default(now()) @db.Timestamp(6)
+  createdAt               DateTime                 @default(now())
   accessLevels            accessLevels?             @relation(fields: [levelId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   classrooms              classrooms[]
   pendingRoomReservations pendingRoomReservations[]
