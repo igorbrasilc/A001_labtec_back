@@ -83,6 +83,66 @@ export async function getConfirmedReservations(req, res) {
     }
 }
 
+export async function getAllConfirmedReservations(req, res) {
+    const { userLevel } = req.params;
+    const { user } = res.locals;
+
+    if (userLevel === 'admin' && user.levelId !== 1)
+        return res
+            .status(401)
+            .send('Não autorizado para esta rota, acesse /user');
+
+    if (userLevel === 'user' && user.levelId != 2)
+        return res
+            .status(401)
+            .send('Não autorizado para esta rota, acesse /admin');
+
+    try {
+        const confirmedReservations =
+            await classRepository.getAllConfirmedReservations(
+                user.id,
+                userLevel === 'user' ? 'user' : 'admin'
+            );
+        res.status(200).json(confirmedReservations);
+    } catch (err) {
+        console.log(
+            'Erro ao buscar reservas confirmadas para este usuário',
+            err
+        );
+        res.status(500).send(err);
+    }
+}
+
+export async function getAllPendingReservations(req, res) {
+    const { userLevel } = req.params;
+    const { user } = res.locals;
+
+    if (userLevel === 'admin' && user.levelId != 1)
+        return res
+            .status(401)
+            .send('Não autorizado para esta rota, acesse /user');
+
+    if (userLevel === 'user' && user.levelId != 2)
+        return res
+            .status(401)
+            .send('Não autorizado para esta rota, acesse /admin');
+
+    try {
+        const pendingReservations =
+            await classRepository.getAllPendingReservations(
+                user.id,
+                userLevel === 'user' ? 'user' : 'admin'
+            );
+        res.status(200).json(pendingReservations);
+    } catch (err) {
+        console.log(
+            'Erro ao buscar reservas confirmadas para este usuário',
+            err
+        );
+        res.status(500).send(err);
+    }
+}
+
 export async function getRoom(req, res) {
     const { id } = req.params;
     try {

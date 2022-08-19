@@ -44,6 +44,66 @@ async function getConfirmedReservations(roomId) {
     });
 }
 
+async function getAllConfirmedReservations(userId, userLevel) {
+    if (userLevel === 'admin') {
+        return prisma.roomReservations.findMany({
+            where: {
+                classrooms: {
+                    responsibleId: userId,
+                },
+            },
+            include: {
+                classrooms: {},
+                users: { select: { name: true, email: true } },
+            },
+        });
+    } else {
+        return prisma.roomReservations.findMany({
+            where: {
+                userId,
+            },
+            include: {
+                classrooms: {
+                    select: {
+                        room: true,
+                    },
+                },
+                users: { select: { name: true, email: true } },
+            },
+        });
+    }
+}
+
+async function getAllPendingReservations(userId, userLevel) {
+    if (userLevel === 'admin') {
+        return prisma.pendingRoomReservations.findMany({
+            where: {
+                classrooms: {
+                    responsibleId: userId,
+                },
+            },
+            include: {
+                classrooms: {},
+                users: { select: { name: true, email: true } },
+            },
+        });
+    } else {
+        return prisma.pendingRoomReservations.findMany({
+            where: {
+                userId,
+            },
+            include: {
+                classrooms: {
+                    select: {
+                        room: true,
+                    },
+                },
+                users: { select: { name: true, email: true } },
+            },
+        });
+    }
+}
+
 const classRepository = {
     getAvailableRooms,
     insertClassroomReservation,
@@ -51,6 +111,8 @@ const classRepository = {
     getPendingReservations,
     getPendingReservationsAdmin,
     getConfirmedReservations,
+    getAllPendingReservations,
+    getAllConfirmedReservations,
 };
 
 export default classRepository;
