@@ -74,6 +74,18 @@ async function getAllConfirmedReservations(userId, userLevel) {
     }
 }
 
+async function getRoomReservation(id) {
+    return prisma.pendingRoomReservations.findFirstOrThrow({ where: { id } });
+}
+
+async function insertToConfirmedReservations(data) {
+    return prisma.roomReservations.create({ data });
+}
+
+async function deletePendingRoomReservation(id) {
+    return prisma.pendingRoomReservations.delete({ where: { id } });
+}
+
 async function getAllPendingReservations(userId, userLevel) {
     if (userLevel === 'admin') {
         return prisma.pendingRoomReservations.findMany({
@@ -113,6 +125,9 @@ const classRepository = {
     getConfirmedReservations,
     getAllPendingReservations,
     getAllConfirmedReservations,
+    getRoomReservation,
+    insertToConfirmedReservations,
+    deletePendingRoomReservation,
 };
 
 export default classRepository;

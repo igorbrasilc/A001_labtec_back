@@ -9,6 +9,8 @@ import {
     getRoom,
     getAllConfirmedReservations,
     getAllPendingReservations,
+    approveReservation,
+    disapproveReservation,
 } from '../controllers/classController.js';
 import { classSchema } from '../schemas/classSchemas.js';
 
@@ -36,6 +38,16 @@ classRouter.get(
     '/reservas/pendentes/todas/:userLevel',
     tokenValidation,
     getAllPendingReservations
+);
+classRouter.put(
+    '/reservas/pendentes/:reservaId/aprovar',
+    tokenValidation,
+    approveReservation
+);
+classRouter.put(
+    '/reservas/pendentes/:reservaId/reprovar',
+    tokenValidation,
+    disapproveReservation
 );
 
 export default classRouter;

@@ -153,3 +153,37 @@ export async function getRoom(req, res) {
         res.status(500).send(err);
     }
 }
+
+export async function approveReservation(req, res) {
+    const { reservaId } = req.params;
+    const { user } = res.locals;
+
+    try {
+        const roomReservation = await classRepository.getRoomReservation(
+            Number(reservaId)
+        );
+        delete roomReservation.id;
+        await classRepository.insertToConfirmedReservations(roomReservation);
+        await classRepository.deletePendingRoomReservation(Number(reservaId));
+        res.status(201).send('Reserva confirmada!');
+    } catch (err) {
+        console.log('Erro ao buscar reserva', err);
+        res.status(500).send(err);
+    }
+}
+
+export async function disapproveReservation(req, res) {
+    const { reservaId } = req.params;
+    const { user } = res.locals;
+
+    try {
+        const roomReservation = await classRepository.getRoomReservation(
+            Number(reservaId)
+        );
+        await classRepository.deletePendingRoomReservation(Number(reservaId));
+        res.status(201).send('Reserva cancelada!');
+    } catch (err) {
+        console.log('Erro ao buscar reserva', err);
+        res.status(500).send(err);
+    }
+}
