@@ -17,13 +17,18 @@ import { classSchema } from '../schemas/classSchemas.js';
 const classRouter = Router();
 
 classRouter.post(
-    '/agendamento',
+    '/agendamento/:roomId',
     [tokenValidation, validateSchema(classSchema)],
     scheduleRoom
 );
 classRouter.get('/salas/:id', getRoom);
 classRouter.get('/salas', getAvailableRooms);
 classRouter.get('/reservas/:roomId', tokenValidation, getConfirmedReservations);
+// classRouter.post(
+//     '/reservas/pendentes/:reservaId',
+//     [classSchema, tokenValidation],
+//     postPendingReservation
+// );
 classRouter.get(
     '/reservas/pendentes/:roomId',
     tokenValidation,

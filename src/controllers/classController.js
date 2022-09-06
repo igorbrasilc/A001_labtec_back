@@ -2,22 +2,18 @@ import classRepository from '../repositories/classRepository.js';
 import dayjs from 'dayjs';
 
 export async function scheduleRoom(req, res) {
-    const {
-        description,
-        reservationDate,
-        durationInHours,
-        reservationHour,
-        userId,
-        roomId,
-    } = req.body;
+    const { description, reservationDate, durationInHours, reservationHour } =
+        req.body;
+    const { roomId } = req.params;
+    const { id } = res.locals.user;
     try {
         const classroomData = {
             description,
             reservationDate,
             durationInHours,
             reservationHour,
-            userId,
-            roomId,
+            userId: Number(id),
+            roomId: Number(roomId),
         };
 
         await classRepository.insertClassroomReservation(classroomData);
