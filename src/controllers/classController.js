@@ -5,7 +5,7 @@ export async function scheduleRoom(req, res) {
     const { description, reservationDate, durationInHours, reservationHour } =
         req.body;
     const { roomId } = req.params;
-    const { id } = res.locals.user;
+    const { id, levelId } = res.locals.user;
     try {
         const classroomData = {
             description,
@@ -16,7 +16,12 @@ export async function scheduleRoom(req, res) {
             roomId: Number(roomId),
         };
 
-        await classRepository.insertClassroomReservation(classroomData);
+        if (Number(levelId) === 1) {
+            await classRepository.insertToConfirmedReservations(classroomData);
+        } else {
+            await classRepository.insertClassroomReservation(classroomData);
+        }
+
         res.status(201).send('Created reservation!');
     } catch (e) {
         res.status(500).send(e);
