@@ -11,6 +11,7 @@ import {
     getAllPendingReservations,
     approveReservation,
     disapproveReservation,
+    deleteReservation,
 } from '../controllers/classController.js';
 import { classSchema } from '../schemas/classSchemas.js';
 
@@ -24,11 +25,6 @@ classRouter.post(
 classRouter.get('/salas/:id', getRoom);
 classRouter.get('/salas', getAvailableRooms);
 classRouter.get('/reservas/:roomId', tokenValidation, getConfirmedReservations);
-// classRouter.post(
-//     '/reservas/pendentes/:reservaId',
-//     [classSchema, tokenValidation],
-//     postPendingReservation
-// );
 classRouter.get(
     '/reservas/pendentes/:roomId',
     tokenValidation,
@@ -53,6 +49,11 @@ classRouter.put(
     '/reservas/pendentes/:reservaId/reprovar',
     tokenValidation,
     disapproveReservation
+);
+classRouter.delete(
+    '/reservas/confirmadas/:reservaId/deletar',
+    tokenValidation,
+    deleteReservation
 );
 
 export default classRouter;

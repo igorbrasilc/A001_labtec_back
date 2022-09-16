@@ -78,6 +78,10 @@ async function getRoomReservation(id) {
     return prisma.pendingRoomReservations.findFirstOrThrow({ where: { id } });
 }
 
+async function getConfirmedRoomReservation(id) {
+    return prisma.roomReservations.findFirstOrThrow({ where: { id } });
+}
+
 async function insertToConfirmedReservations(data) {
     return prisma.roomReservations.create({ data });
 }
@@ -116,6 +120,10 @@ async function getAllPendingReservations(userId, userLevel) {
     }
 }
 
+async function deleteConfirmedReservation(id) {
+    await prisma.roomReservations.delete({ where: { id } });
+}
+
 const classRepository = {
     getAvailableRooms,
     insertClassroomReservation,
@@ -128,6 +136,8 @@ const classRepository = {
     getRoomReservation,
     insertToConfirmedReservations,
     deletePendingRoomReservation,
+    getConfirmedRoomReservation,
+    deleteConfirmedReservation,
 };
 
 export default classRepository;

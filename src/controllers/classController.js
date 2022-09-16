@@ -24,6 +24,32 @@ export async function scheduleRoom(req, res) {
     }
 }
 
+export async function deleteReservation(req, res) {
+    const { user } = res.locals;
+    const { reservaId } = req.params;
+
+    try {
+        if (user.levelId !== 1) {
+            const reservation = await classRepository.getConfirmedReservations(
+                Number(reservaId)
+            );
+            if (reservation?.userId !== Number(user.id)) {
+                throw new Error(
+                    'Esta reserva não pertence ao usuário para ser deletada'
+                );
+                return;
+            }
+        }
+
+        await classRepository.deleteConfirmedReservation(Number(reservaId));
+
+        res.sendStatus(200);
+    } catch (err) {
+        res.status(500).send(err);
+        console.log('Erro ao deletar a reserva', err);
+    }
+}
+
 export async function getAvailableRooms(req, res) {
     try {
         const availableRooms = await classRepository.getAvailableRooms();
