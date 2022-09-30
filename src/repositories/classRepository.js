@@ -1,4 +1,10 @@
 import prisma from '../database.js';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import 'dayjs/locale/pt-br.js';
+
+dayjs.locale('pt-br');
+dayjs.extend(customParseFormat);
 
 async function getAvailableRooms() {
     return prisma.$queryRaw`
@@ -9,8 +15,20 @@ async function getAvailableRooms() {
     `;
 }
 
-async function insertClassroomReservation(data) {
-    return prisma.pendingRoomReservations.create({ data });
+async function insertClassroomReservation(data, numberOfWeeks) {
+    if (!numberOfWeeks || Number(numberOfWeeks) === 1) {
+        return prisma.pendingRoomReservations.create({ data });
+    } else {
+        for (let i = 0; i < numberOfWeeks; i++) {
+            const reservationDate = dayjs(data.reservationDate, 'DD/MM/YYYY')
+                .add(7 * i, 'day')
+                .format('DD/MM/YYYY')
+                .toString();
+            await prisma.pendingRoomReservations.create({
+                data: { ...data, reservationDate },
+            });
+        }
+    }
 }
 
 async function getRoom(id) {
@@ -40,6 +58,20 @@ async function getPendingReservationsAdmin(roomId) {
 async function getConfirmedReservations(roomId) {
     return prisma.roomReservations.findMany({
         where: { roomId },
+        include: { classrooms: {} },
+    });
+}
+
+async function getUniquePendingReservation(id) {
+    return prisma.pendingRoomReservations.findUnique({
+        where: { id },
+        include: { classrooms: {} },
+    });
+}
+
+async function getUniqueConfirmedReservation(id) {
+    return prisma.roomReservations.findUnique({
+        where: { id },
         include: { classrooms: {} },
     });
 }
@@ -82,7 +114,7 @@ async function getConfirmedRoomReservation(id) {
     return prisma.roomReservations.findFirstOrThrow({ where: { id } });
 }
 
-async function insertToConfirmedReservations(data) {
+async function insertToConfirmedReservations(data, numberOfWeeks) {
     return prisma.roomReservations.create({ data });
 }
 
@@ -120,8 +152,12 @@ async function getAllPendingReservations(userId, userLevel) {
     }
 }
 
-async function deleteConfirmedReservation(id) {
-    await prisma.roomReservations.delete({ where: { id } });
+async function deleteReservation(id) {
+    try {
+        await prisma.roomReservations.delete({ where: { id } });
+    } catch (err) {
+        await prisma.pendingRoomReservations.delete({ where: { id } });
+    }
 }
 
 const classRepository = {
@@ -137,7 +173,9 @@ const classRepository = {
     insertToConfirmedReservations,
     deletePendingRoomReservation,
     getConfirmedRoomReservation,
-    deleteConfirmedReservation,
+    deleteReservation,
+    getUniquePendingReservation,
+    getUniqueConfirmedReservation,
 };
 
 export default classRepository;
