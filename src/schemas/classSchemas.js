@@ -8,4 +8,5 @@ export const classSchema = Joi.object({
     reservationDate: Joi.date().format('DD/MM/YYYY').required(),
     reservationHour: Joi.date().format('HH:mm').required(),
     durationInHours: Joi.date().format('HH:mm').required(),
+    numberOfWeeks: joi.any(),
 });

@@ -1,11 +1,18 @@
 import classRepository from '../repositories/classRepository.js';
-import dayjs from 'dayjs';
 
 export async function scheduleRoom(req, res) {
-    const { description, reservationDate, durationInHours, reservationHour } =
-        req.body;
+    const {
+        description,
+        reservationDate,
+        durationInHours,
+        reservationHour,
+        numberOfWeeks,
+    } = req.body;
     const { roomId } = req.params;
     const { id, levelId } = res.locals.user;
+
+    const weeks = numberOfWeeks || 1;
+
     try {
         const classroomData = {
             description,
@@ -17,9 +24,15 @@ export async function scheduleRoom(req, res) {
         };
 
         if (Number(levelId) === 1) {
-            await classRepository.insertToConfirmedReservations(classroomData);
+            await classRepository.insertToConfirmedReservations(
+                classroomData,
+                weeks
+            );
         } else {
-            await classRepository.insertClassroomReservation(classroomData);
+            await classRepository.insertClassroomReservation(
+                classroomData,
+                weeks
+            );
         }
 
         res.status(201).send('Created reservation!');
@@ -35,18 +48,25 @@ export async function deleteReservation(req, res) {
 
     try {
         if (user.levelId !== 1) {
-            const reservation = await classRepository.getConfirmedReservations(
-                Number(reservaId)
-            );
-            if (reservation?.userId !== Number(user.id)) {
+            let reservation =
+                await classRepository.getUniqueConfirmedReservation(
+                    Number(reservaId)
+                );
+
+            if (!reservation) {
+                reservation = await classRepository.getUniquePendingReservation(
+                    Number(reservaId)
+                );
+            }
+
+            if (Number(reservation?.userId) !== Number(user.id)) {
                 throw new Error(
                     'Esta reserva não pertence ao usuário para ser deletada'
                 );
-                return;
             }
         }
 
-        await classRepository.deleteConfirmedReservation(Number(reservaId));
+        await classRepository.deleteReservation(Number(reservaId));
 
         res.sendStatus(200);
     } catch (err) {
