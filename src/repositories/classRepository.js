@@ -58,7 +58,7 @@ async function getPendingReservationsAdmin(roomId) {
 async function getConfirmedReservations(roomId) {
     return prisma.roomReservations.findMany({
         where: { roomId },
-        include: { classrooms: {} },
+        include: { classrooms: {}, users: {} },
     });
 }
 
